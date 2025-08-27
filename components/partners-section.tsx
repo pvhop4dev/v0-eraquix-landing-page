@@ -5,6 +5,31 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useState, useEffect } from "react"
 
 export default function PartnersSection() {
+  const [language, setLanguage] = useState("en")
+
+  const content = {
+    en: {
+      title: "Our Partners",
+      description:
+        "We collaborate with industry leaders to deliver exceptional solutions and drive innovation together.",
+      partnershipText: "Interested in partnering with us?",
+      contactLink: "Get in touch →",
+    },
+    vi: {
+      title: "Đối Tác Của Chúng Tôi",
+      description:
+        "Chúng tôi hợp tác với các nhà lãnh đạo ngành để cung cấp các giải pháp xuất sắc và thúc đẩy đổi mới cùng nhau.",
+      partnershipText: "Quan tâm đến việc hợp tác với chúng tôi?",
+      contactLink: "Liên hệ →",
+    },
+    ar: {
+      title: "شركاؤنا",
+      description: "نتعاون مع قادة الصناعة لتقديم حلول استثنائية ودفع الابتكار معًا.",
+      partnershipText: "مهتم بالشراكة معنا؟",
+      contactLink: "تواصل معنا ←",
+    },
+  }
+
   const partners = [
     { name: "Beko Jyobi", category: "Technology", description: "Leading technology solutions provider" },
     { name: "VNPT", category: "Telecommunications", description: "Vietnam's largest telecom operator" },
@@ -20,6 +45,21 @@ export default function PartnersSection() {
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [itemsPerView, setItemsPerView] = useState(5)
+
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("language") || "en"
+    setLanguage(savedLanguage)
+  }, [])
+
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      const savedLanguage = localStorage.getItem("language") || "en"
+      setLanguage(savedLanguage)
+    }
+
+    window.addEventListener("languageChanged", handleLanguageChange)
+    return () => window.removeEventListener("languageChanged", handleLanguageChange)
+  }, [])
 
   useEffect(() => {
     const updateItemsPerView = () => {
@@ -53,16 +93,17 @@ export default function PartnersSection() {
   }
 
   const visiblePartners = partners.slice(currentIndex, currentIndex + itemsPerView)
+  const currentContent = content[language]
 
   return (
-    <section id="partners" className="py-20 bg-background">
+    <section id="partners" className={`py-20 bg-background ${language === "ar" ? "rtl" : "ltr"}`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6 font-[family-name:var(--font-manrope)]">
-            Our Partners
+            {currentContent.title}
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            We collaborate with industry leaders to deliver exceptional solutions and drive innovation together.
+            {currentContent.description}
           </p>
         </div>
 
@@ -91,7 +132,7 @@ export default function PartnersSection() {
               className="flex transition-transform duration-500 ease-in-out gap-8"
               style={{ transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)` }}
             >
-              {partners.map((partner, index) => (
+              {visiblePartners.map((partner, index) => (
                 <div
                   key={index}
                   className="flex-shrink-0 text-center group cursor-pointer"
@@ -130,12 +171,12 @@ export default function PartnersSection() {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-muted-foreground mb-6">Interested in partnering with us?</p>
+          <p className="text-muted-foreground mb-6">{currentContent.partnershipText}</p>
           <a
             href="#contact"
             className="inline-flex items-center text-primary hover:text-primary/80 font-medium transition-colors"
           >
-            Get in touch →
+            {currentContent.contactLink}
           </a>
         </div>
       </div>

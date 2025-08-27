@@ -13,6 +13,11 @@ export default function Header() {
   const { theme, setTheme } = useTheme()
 
   useEffect(() => {
+    const savedLanguage = localStorage.getItem("language") || "en"
+    setLanguage(savedLanguage)
+  }, [])
+
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
     }
@@ -20,20 +25,41 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const handleLanguageChange = (newLanguage: string) => {
+    setLanguage(newLanguage)
+    localStorage.setItem("language", newLanguage)
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent("languageChanged", { detail: newLanguage }))
+  }
+
   const navItems = [
-    { name: language === "en" ? "Home" : "Trang chủ", href: "#home" },
-    { name: language === "en" ? "About" : "Giới thiệu", href: "#about" },
-    { name: language === "en" ? "Products" : "Sản phẩm", href: "#products" },
-    { name: language === "en" ? "Solutions" : "Giải pháp", href: "#solutions" },
-    { name: language === "en" ? "Partners" : "Đối tác", href: "#partners" },
-    { name: language === "en" ? "Contact" : "Liên hệ", href: "#contact" },
+    { name: language === "en" ? "Home" : language === "vi" ? "Trang chủ" : "الرئيسية", href: "#home" },
+    { name: language === "en" ? "About" : language === "vi" ? "Giới thiệu" : "حول", href: "#about" },
+    { name: language === "en" ? "Products" : language === "vi" ? "Sản phẩm" : "المنتجات", href: "#products" },
+    { name: language === "en" ? "Solutions" : language === "vi" ? "Giải pháp" : "الحلول", href: "#solutions" },
+    { name: language === "en" ? "Partners" : language === "vi" ? "Đối tác" : "الشركاء", href: "#partners" },
+    { name: language === "en" ? "Contact" : language === "vi" ? "Liên hệ" : "اتصل بنا", href: "#contact" },
   ]
+
+  const getLanguageDisplayName = () => {
+    switch (language) {
+      case "en":
+        return "English"
+      case "vi":
+        return "Tiếng Việt"
+      case "ar":
+        return "العربية"
+      default:
+        return "English"
+    }
+  }
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled ? "bg-background/95 backdrop-blur-sm shadow-sm" : "bg-transparent"
       }`}
+      dir={language === "ar" ? "rtl" : "ltr"}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -78,15 +104,18 @@ export default function Header() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1">
                   <Globe className="h-4 w-4" />
-                  <span>{language === "en" ? "English" : "Tiếng Việt"}</span>
+                  <span>{getLanguageDisplayName()}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setLanguage("en")}>
+                <DropdownMenuItem onClick={() => handleLanguageChange("en")}>
                   <span className={language === "en" ? "font-semibold" : ""}>English</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage("vi")}>
+                <DropdownMenuItem onClick={() => handleLanguageChange("vi")}>
                   <span className={language === "vi" ? "font-semibold" : ""}>Tiếng Việt</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange("ar")}>
+                  <span className={language === "ar" ? "font-semibold" : ""}>العربية</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -124,21 +153,26 @@ export default function Header() {
                 >
                   <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                   <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span>{language === "en" ? "Toggle theme" : "Đổi giao diện"}</span>
+                  <span>
+                    {language === "en" ? "Toggle theme" : language === "vi" ? "Đổi giao diện" : "تبديل المظهر"}
+                  </span>
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="flex items-center space-x-2 w-full justify-start">
                       <Globe className="h-4 w-4" />
-                      <span>{language === "en" ? "English" : "Tiếng Việt"}</span>
+                      <span>{getLanguageDisplayName()}</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setLanguage("en")}>
+                    <DropdownMenuItem onClick={() => handleLanguageChange("en")}>
                       <span className={language === "en" ? "font-semibold" : ""}>English</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setLanguage("vi")}>
+                    <DropdownMenuItem onClick={() => handleLanguageChange("vi")}>
                       <span className={language === "vi" ? "font-semibold" : ""}>Tiếng Việt</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleLanguageChange("ar")}>
+                      <span className={language === "ar" ? "font-semibold" : ""}>العربية</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
