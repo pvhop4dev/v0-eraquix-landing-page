@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 export default function PartnersSection() {
   const [language, setLanguage] = useState("en")
@@ -43,8 +43,11 @@ export default function PartnersSection() {
     { name: "AI Solutions", category: "Artificial Intelligence", description: "AI-powered business solutions" },
   ]
 
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const infinitePartners = [...partners, ...partners, ...partners]
+
+  const [currentIndex, setCurrentIndex] = useState(partners.length)
   const [itemsPerView, setItemsPerView] = useState(5)
+  const carouselRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem("language") || "en"
@@ -76,23 +79,43 @@ export default function PartnersSection() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % Math.max(1, partners.length - itemsPerView + 1))
+      nextSlide()
     }, 3000)
     return () => clearInterval(timer)
-  }, [partners.length, itemsPerView])
+  }, [])
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % Math.max(1, partners.length - itemsPerView + 1))
+    setCurrentIndex((prev) => prev + 1)
   }
 
   const prevSlide = () => {
-    setCurrentIndex(
-      (prev) =>
-        (prev - 1 + Math.max(1, partners.length - itemsPerView + 1)) % Math.max(1, partners.length - itemsPerView + 1),
-    )
+    setCurrentIndex((prev) => prev - 1)
   }
 
-  const visiblePartners = partners.slice(currentIndex, currentIndex + itemsPerView)
+  useEffect(() => {
+    if (currentIndex >= partners.length * 2) {
+      const timer = setTimeout(() => {
+        if (carouselRef.current) {
+          carouselRef.current.style.transition = "none"
+          setCurrentIndex(partners.length)
+          carouselRef.current.offsetHeight
+          carouselRef.current.style.transition = "transform 500ms ease-in-out"
+        }
+      }, 500)
+      return () => clearTimeout(timer)
+    } else if (currentIndex <= 0) {
+      const timer = setTimeout(() => {
+        if (carouselRef.current) {
+          carouselRef.current.style.transition = "none"
+          setCurrentIndex(partners.length)
+          carouselRef.current.offsetHeight
+          carouselRef.current.style.transition = "transform 500ms ease-in-out"
+        }
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [currentIndex, partners.length])
+
   const currentContent = content[language]
 
   return (
@@ -129,42 +152,52 @@ export default function PartnersSection() {
           {/* Partners Grid */}
           <div className="overflow-hidden">
             <div
-              className="flex transition-transform duration-500 ease-in-out gap-8"
-              style={{ transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)` }}
+              ref={carouselRef}
+              className="flex gap-6 transition-transform duration-500 ease-in-out items-stretch"
+              style={{ transform: `translateX(-${(currentIndex * 100) / itemsPerView}%)` }}
             >
-              {visiblePartners.map((partner, index) => (
+              {infinitePartners.map((partner, index) => (
                 <div
-                  key={index}
-                  className="flex-shrink-0 text-center group cursor-pointer"
+                  key={`${partner.name}-${index}`}
+                  className="flex-shrink-0 text-center group cursor-pointer px-2"
                   style={{ width: `${100 / itemsPerView}%` }}
                 >
-                  <div className="bg-card rounded-lg p-6 mb-4 hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1 mx-2">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                      <span className="text-primary font-bold text-lg">{partner.name.charAt(0)}</span>
+                  <div className="bg-card rounded-lg p-6 h-full flex flex-col hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+                    <div className="flex flex-col items-center flex-1">
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                        <span className="text-primary font-bold text-lg">{partner.name.charAt(0)}</span>
+                      </div>
+                      <h3 className="font-semibold text-foreground mb-3 font-[family-name:var(--font-manrope)] text-center">
+                        {partner.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-4 text-center leading-relaxed flex-1">
+                        {partner.description}
+                      </p>
                     </div>
-                    <h3 className="font-semibold text-foreground mb-2 font-[family-name:var(--font-manrope)]">
-                      {partner.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-3 min-h-[2.5rem]">{partner.description}</p>
-                    <Badge variant="secondary" className="text-xs">
-                      {partner.category}
-                    </Badge>
+                    <div className="flex justify-center mt-auto">
+                      <Badge variant="secondary" className="text-xs">
+                        {partner.category}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Slide Indicators */}
           <div className="flex justify-center mt-8 space-x-2">
-            {Array.from({ length: Math.max(1, partners.length - itemsPerView + 1) }).map((_, index) => (
+            {partners.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentIndex(index)}
+                onClick={() => {
+                  setCurrentIndex(partners.length + index)
+                }}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? "bg-primary scale-125" : "bg-primary/30 hover:bg-primary/50"
+                  (currentIndex - partners.length) % partners.length === index
+                    ? "bg-primary scale-125"
+                    : "bg-primary/30 hover:bg-primary/50"
                 }`}
-                aria-label={`Go to partner group ${index + 1}`}
+                aria-label={`Go to partner ${index + 1}`}
               />
             ))}
           </div>
