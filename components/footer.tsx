@@ -4,13 +4,14 @@ import { Separator } from "@/components/ui/separator"
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Github } from "lucide-react"
 import { useState, useEffect } from "react"
 
+type Language = 'en' | 'vi' | 'ar';
 export default function Footer() {
-  const [language, setLanguage] = useState("en")
+  const [language, setLanguage] = useState<Language>("en")
   const currentYear = new Date().getFullYear()
 
   useEffect(() => {
     const handleLanguageChange = () => {
-      const currentLang = localStorage.getItem("language") || "en"
+      const currentLang = localStorage.getItem("language") as Language || "en"
       setLanguage(currentLang)
     }
 

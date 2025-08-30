@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Code, Brain, Network, Database, Smartphone, Cloud, MessageSquare, BarChart3, Cog } from "lucide-react"
 import { useState, useEffect } from "react"
 
+type Language = 'en' | 'vi' | 'ar'; 
 export default function SolutionsSection() {
-  const [language, setLanguage] = useState("en")
+  const [language, setLanguage] = useState<Language>("en")
 
   useEffect(() => {
     const handleLanguageChange = () => {
-      const currentLang = localStorage.getItem("language") || "en"
+      const currentLang = (localStorage.getItem("language") as Language) || "en"
       setLanguage(currentLang)
     }
 

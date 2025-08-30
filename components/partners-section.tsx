@@ -4,8 +4,10 @@ import { Badge } from "@/components/ui/badge"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 
+type Language = 'en' | 'vi' | 'ar';
+
 export default function PartnersSection() {
-  const [language, setLanguage] = useState("en")
+  const [language, setLanguage] = useState<Language>("en")
 
   const content = {
     en: {
@@ -50,13 +52,13 @@ export default function PartnersSection() {
   const carouselRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("language") || "en"
+    const savedLanguage = (localStorage.getItem("language") as Language) || "en"
     setLanguage(savedLanguage)
   }, [])
 
   useEffect(() => {
     const handleLanguageChange = () => {
-      const savedLanguage = localStorage.getItem("language") || "en"
+      const savedLanguage = (localStorage.getItem("language") as Language) || "en"
       setLanguage(savedLanguage)
     }
 

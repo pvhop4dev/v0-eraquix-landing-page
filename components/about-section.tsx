@@ -5,7 +5,8 @@ import { Target, Eye, Users, Lightbulb } from "lucide-react"
 import { useState, useEffect } from "react"
 
 export default function AboutSection() {
-  const [language, setLanguage] = useState("en")
+  type LanguageKey = 'en' | 'vi' | 'ar';
+  const [language, setLanguage] = useState<LanguageKey>('en')
 
   const content = {
     en: {
@@ -72,13 +73,13 @@ export default function AboutSection() {
   }
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("language") || "en"
+    const savedLanguage = (localStorage.getItem("language") as LanguageKey) || "en"
     setLanguage(savedLanguage)
   }, [])
 
   useEffect(() => {
     const handleLanguageChange = () => {
-      const savedLanguage = localStorage.getItem("language") || "en"
+      const savedLanguage = (localStorage.getItem("language") as LanguageKey) || "en"
       setLanguage(savedLanguage)
     }
 

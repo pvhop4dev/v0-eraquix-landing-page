@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Menu, X, Globe, Sun, Moon } from "lucide-react"
 import { useTheme } from "next-themes"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+type Language = 'en' | 'vi' | 'ar'; 
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -13,7 +14,7 @@ export default function Header() {
   const { theme, setTheme } = useTheme()
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("language") || "en"
+    const savedLanguage = localStorage.getItem("language") as Language|| "en"
     setLanguage(savedLanguage)
   }, [])
 

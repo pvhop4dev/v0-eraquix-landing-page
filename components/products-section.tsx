@@ -6,10 +6,30 @@ import { Button } from "@/components/ui/button"
 import { Database, Globe, Users, Shield, Share2, Zap, Camera, Cpu, Wifi } from "lucide-react"
 import { useState, useEffect } from "react"
 
-export default function ProductsSection() {
-  const [language, setLanguage] = useState("en")
+type Language = "en" | "vi" | "ar"
 
-  const content = {
+interface Product {
+  icon: any
+  name: string
+  description: string
+  category: string
+}
+
+type Content = {
+  [key in Language]: {
+    title: string
+    description: string
+    softwareTitle: string
+    iotTitle: string
+    learnMore: string
+    productsCount: string
+  }
+}
+
+export default function ProductsSection() {
+  const [language, setLanguage] = useState<Language>("en")
+
+  const content: Content = {
     en: {
       title: "Our Products",
       description: "Innovative solutions designed to transform your business operations and drive digital success.",
@@ -217,13 +237,13 @@ export default function ProductsSection() {
   }
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("language") || "en"
+    const savedLanguage = (localStorage.getItem("language") as Language) || "en"
     setLanguage(savedLanguage)
   }, [])
 
   useEffect(() => {
     const handleLanguageChange = () => {
-      const savedLanguage = localStorage.getItem("language") || "en"
+      const savedLanguage = (localStorage.getItem("language") as Language) || "en"
       setLanguage(savedLanguage)
     }
 

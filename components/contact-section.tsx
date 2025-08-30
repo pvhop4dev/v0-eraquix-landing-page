@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Mail, Phone, MapPin, Send } from "lucide-react"
-
+type Language = 'en' | 'vi' | 'ar';
 export default function ContactSection() {
-  const [language, setLanguage] = useState("en")
+  const [language, setLanguage] = useState<Language>("en")
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -20,7 +20,7 @@ export default function ContactSection() {
 
   useEffect(() => {
     const handleLanguageChange = () => {
-      const currentLang = localStorage.getItem("language") || "en"
+      const currentLang = localStorage.getItem("language") as Language || "en"
       setLanguage(currentLang)
     }
 

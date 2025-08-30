@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Play, ChevronLeft, ChevronRight } from "lucide-react"
 import { useState, useEffect } from "react"
-
+type LanguageKey = 'en' | 'vi' | 'ar';
 export default function HeroSection() {
-  const [language, setLanguage] = useState("en")
+  const [language, setLanguage] = useState<LanguageKey>('en')
 
   const heroSlides = {
     en: [
@@ -88,13 +88,13 @@ export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0)
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("language") || "en"
+    const savedLanguage = localStorage.getItem("language") as LanguageKey || "en"
     setLanguage(savedLanguage)
   }, [])
 
   useEffect(() => {
     const handleLanguageChange = () => {
-      const savedLanguage = localStorage.getItem("language") || "en"
+      const savedLanguage = localStorage.getItem("language") as LanguageKey || "en"
       setLanguage(savedLanguage)
     }
 
