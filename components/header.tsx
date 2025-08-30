@@ -57,7 +57,9 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-background/95 backdrop-blur-sm shadow-sm" : "bg-transparent"
+        isScrolled 
+          ? "bg-background/95 backdrop-blur-md shadow-lg border-b border-border/50" 
+          : "bg-background/80 backdrop-blur-sm border-b border-transparent"
       }`}
       dir={language === "ar" ? "rtl" : "ltr"}
     >
@@ -66,18 +68,29 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <span className="text-2xl font-bold text-primary font-[family-name:var(--font-manrope)]">ERAQUIX</span>
+              <div className="relative h-14 w-auto transition-all duration-300 hover:scale-110 hover:rotate-3 border-2 border-primary/20 rounded-xl p-1">
+                <img
+                  src="/logo_light.webp"
+                  alt="Eraquix Logo"
+                  className="h-full w-auto dark:hidden"
+                />
+                <img
+                  src="/logo_dark.webp"
+                  alt="Eraquix Logo"
+                  className="hidden h-full w-auto dark:block"
+                />
+              </div>
             </div>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+            <div className="ml-10 flex items-baseline space-x-2">
               {navItems.map((item) => (
                 <a
                   key={item.name}
                   href={item.href}
-                  className="text-foreground hover:text-primary px-3 py-2 text-sm font-medium transition-colors duration-200"
+                  className="text-foreground hover:bg-accent/80 hover:text-accent-foreground px-4 py-2.5 text-base font-medium rounded-lg transition-all duration-200"
                 >
                   {item.name}
                 </a>
@@ -90,9 +103,9 @@ export default function Header() {
             {/* Theme Toggle */}
             <Button
               variant="ghost"
-              size="sm"
+              size="default"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="hidden sm:flex"
+              className="hidden sm:flex w-11 h-11 items-center justify-center"
             >
               <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -102,7 +115,7 @@ export default function Header() {
             {/* Language Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1">
+                <Button variant="ghost" size="default" className="hidden sm:flex items-center space-x-2 px-4 py-5 h-auto">
                   <Globe className="h-4 w-4" />
                   <span>{getLanguageDisplayName()}</span>
                 </Button>
@@ -137,7 +150,7 @@ export default function Header() {
                 <a
                   key={item.name}
                   href={item.href}
-                  className="text-foreground hover:text-primary block px-3 py-2 text-base font-medium transition-colors duration-200"
+                  className="block px-4 py-3 text-lg font-bold text-foreground hover:bg-accent/80 hover:text-accent-foreground rounded-lg transition-colors duration-200 my-1"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.name}

@@ -89,6 +89,18 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
+            <div className="inline-flex items-center justify-center border-2 border-primary/20 rounded-xl p-1">
+              <img
+                src="/logo_light.webp"
+                alt="Eraquix Logo"
+                className="h-10 w-auto dark:hidden"
+              />
+              <img
+                src="/logo_dark.webp"
+                alt="Eraquix Logo"
+                className="hidden h-10 w-auto dark:block"
+              />
+            </div>
             <h3 className="text-2xl font-bold text-primary font-[family-name:var(--font-manrope)]">ERAQUIX</h3>
             <p className="text-muted-foreground leading-relaxed">{currentContent.description}</p>
             <div className="flex space-x-4">
